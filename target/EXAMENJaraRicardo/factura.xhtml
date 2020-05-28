@@ -1,0 +1,83 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:a="http://xmlns.jcp.org/jsf/passthrough">
+
+    <ui:composition template="templete/templete.xhtml">
+        <ui:define name="title">
+            Factura
+        </ui:define>
+        <ui:define name="content">
+            <h:panelGroup id="panelBuscar">
+                <h:form id="idform">
+                    <div class="form-group">
+                        <label class="col-md-12">Buscar Prodcuto</label>
+                        <div class="col-md-12">
+                            <h:inputText value="#{beanFactura.producto.idproducto}"  a:placeholder="Ingrese el id del producto a buscar"
+                                         class="form-control form-control-line" />
+                        </div>
+                    </div>
+                    <h:commandButton value="Buscar" action="#{beanFactura.buscarProducto()}"  type="button" class="btn btn-primary">
+                        <f:ajax render="panelBuscar" execute="panelBuscar"/>
+                    </h:commandButton>
+                    <div class="form-group">
+                        <label class="col-md-12">Nombre #{beanFactura.producto.nombre}</label>
+                        <label class="col-md-12">Precio #{beanFactura.producto.preciouni}</label>
+                        <label class="col-md-12">Stok #{beanFactura.producto.stock}</label>
+                    </div>
+                </h:form>
+
+                <h:commandButton value="AddProducto" action="#{beanFactura.addDetalle()}"  type="button" class="btn btn-primary">
+                    <f:ajax render="detalleT" execute="cantidad"/>
+                </h:commandButton>
+            </h:panelGroup>
+            
+            <h:panelGroup id="cantidad">
+                <h:form >
+                    <div class="col-md-12">
+                        Cantidad:<h:inputText value="10#{beanFactura.cantidad}"  class="form-control form-control-line" />
+                    </div>
+                </h:form>
+            </h:panelGroup>
+            <h:panelGroup id="factura">
+                <div class="form-group">
+                    <label class="col-md-12">Cedula Cliente</label>
+                    <div class="col-md-12">
+                        <h:inputText value="#{beanFactura.factura.cedula}"  class="form-control form-control-line" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-md-12">Nombre Cliente</label>
+                    <div class="col-md-12">
+                        <h:inputText value="#{beanFactura.factura.nombrecli}"  class="form-control form-control-line" />
+                    </div>
+                </div>
+                <h:panelGroup id="detalle">
+                    <div class="form-group">
+                        <h:dataTable id="detalleT" value="#{beanFactura.factura.detalleLis}"  var="detalle">
+                            <h:column>
+                                <f:facet name="header">Cantidad</f:facet>
+                                <h:inputText value="#{detalle.cantidad}"></h:inputText>
+                            </h:column>
+                            <h:column>
+                                <f:facet name="header">Producto</f:facet>
+                                <label class="col-md-12">#{detalle.idproducto.nombre}</label>
+                            </h:column>
+                            <h:column>
+                                <f:facet name="header">Precio Unitario</f:facet>
+                                <label class="col-md-12">#{detalle.idproducto.preciouni}</label>
+                            </h:column>
+                        </h:dataTable>
+                    </div>
+                </h:panelGroup>
+            </h:panelGroup>
+            <h:commandButton value="Buscar" action="#{beanFactura.guardar()}"  type="button" class="btn btn-primary">
+                        <f:ajax render="@all" execute="factura"/>
+                    </h:commandButton>
+        </ui:define>
+    </ui:composition>
+</html>
+
