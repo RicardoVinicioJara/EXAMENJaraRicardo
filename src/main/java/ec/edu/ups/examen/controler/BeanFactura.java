@@ -9,6 +9,7 @@ import ec.edu.ups.examen.business.FacturaONLocal;
 import ec.edu.ups.examen.entidades.Detalle;
 import ec.edu.ups.examen.entidades.Factura;
 import ec.edu.ups.examen.entidades.Producto;
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
@@ -95,19 +96,23 @@ public class BeanFactura {
     public String buscarProducto() {
 
         try {
-            producto = facturaON.buscarProductoById(producto.getIdproducto());
+            Producto p =  facturaON.buscarProductoById(producto.getIdproducto());
+            if(p != null)
+                producto = p;
         } catch (Exception ex) {
+            producto = null;
             Logger.getLogger(BeanFactura.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
     }
 
     public String addDetalle() {
-        System.out.println(cantidad +" ccccccccc");
         Detalle d = new Detalle();
         d.setIdfectura(factura);
         d.setCantidad(cantidad);
         d.setIdproducto(producto);
+        double pre = producto.getPreciouni().doubleValue();
+        d.setTotal(new BigDecimal(pre * d.getCantidad()));
         factura.addDetalle(d);
         return null;
     }
@@ -115,13 +120,10 @@ public class BeanFactura {
     public String guardar() {
 
         try {
-            System.out.println(factura.getCedula()+"cedula");
-            factura.setFecha(new Date());
-            factura.setTotol(100);
             facturaON.guardarFactura(factura);
-           
+            init();
         } catch (Exception ex) {
-            System.out.println(ex.getMessage()+">>>>>>>>>>>>>>>>>>>");
+            System.out.println(ex.getMessage());
         }
         return null;
     }

@@ -7,8 +7,11 @@ package ec.edu.ups.examen.business;
 
 import ec.edu.ups.examen.DAO.FacturaDAO;
 import ec.edu.ups.examen.DAO.ProductoDAO;
+import ec.edu.ups.examen.entidades.Detalle;
 import ec.edu.ups.examen.entidades.Factura;
 import ec.edu.ups.examen.entidades.Producto;
+import java.math.BigDecimal;
+import java.util.Date;
 
 import java.util.List;
 import javax.ejb.Stateless;
@@ -35,6 +38,16 @@ public class FacturaON implements  FacturaONLocal {
     public boolean guardarFactura(Factura factura) throws Exception {
         if (validarCedula(factura.getCedula())) {
             try {
+                factura.setFecha(new Date());
+                List<Detalle> listaDetalles = factura.getDetalleLis();
+                double suma = 0;
+                for (Detalle d : listaDetalles) {
+                    double pre = d.getIdproducto().getPreciouni().doubleValue();
+                    d.setTotal(new BigDecimal(pre * d.getCantidad()));
+                    suma += d.getTotal().doubleValue();
+                }
+               factura.setTotol((int)(suma));
+                
                 facturaDAO.insert(factura);
             } catch (Exception e) {
                 throw new Exception(e.getMessage());
